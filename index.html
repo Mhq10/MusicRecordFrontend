@@ -38,6 +38,34 @@
 
                 <div class="card-body">
 
+                    <input
+                        type="text"
+                        class="form-control mb-3"
+                        id="search-title"
+                        placeholder="Search by title"
+                        v-model="searchTitle">
+
+                    <input
+                        type="text"
+                        class="form-control mb-3"
+                        id="search-artist"
+                        placeholder="Search by artist"
+                        v-model="searchArtist">
+
+                    <input
+                        type="text"
+                        class="form-control mb-3"
+                        id="search-genre"
+                        placeholder="Search by genre"
+                        v-model="searchGenre">
+                    
+                    <input
+                        type="number"
+                        class="form-control mb-3"
+                        id="search-year"
+                        placeholder="Search by year"
+                        v-model.number="searchYear">
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
                         <h2 class="h4 mb-0">Music Records</h2>
@@ -55,7 +83,7 @@
                     <!-- Records table -->
                     <div class="table-responsive" v-if="records.length > 0">
 
-                        <table class="table table-striped table-hover" id="records-table">
+                        <table class="table table-striped table-hover" id="recordsTable">
 
                             <thead class="table-dark">
                                 <tr>
