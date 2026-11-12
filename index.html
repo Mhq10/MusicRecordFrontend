@@ -21,6 +21,10 @@
 <body class="bg-light">
 
     <div id="app">
+        <input class="form-control mb-3" v-model="username" placeholder="Username">
+        <input class="form-control mb-3" v-model="password" type="password" placeholder="Password">
+        <button class="btn btn-primary" v-on:click="login">Login</button>
+        <button class="btn btn-danger" v-if="Role !== ''" @click="logout">Logout</button>
 
         <!-- Main container -->
         <div class="container py-5">
