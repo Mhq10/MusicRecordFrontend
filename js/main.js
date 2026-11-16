@@ -4,11 +4,20 @@ const app = Vue.createApp({
             username: '',
             password: '',
             Role: '',
+
             records: [],
+
             searchTitle: '',
             searchArtist: '',
             searchGenre: '',
-            searchYear: ''
+            searchYear: '',
+
+            AddedId: null,
+            AddedTitle: '',
+            AddedArtist: '',
+            AddedGenre: '',
+            AddedYear: null,
+            AddedDuration: null
         }
     },
 
@@ -32,6 +41,69 @@ const app = Vue.createApp({
                     console.error('Error fetching records:', error);
                 });
         },
+        
+        addRecords() {
+            const newRecord = {
+                id: this.AddedId,
+                title: this.AddedTitle,
+                artist: this.AddedArtist,
+                genre: this.AddedGenre,
+                year: this.AddedYear,
+                duration: this.AddedDuration
+            };
+
+            axios.post('http://localhost:5246/api/records', newRecord, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
+                }
+            })
+                .then(response => {
+                    console.log('Record added:', response.data);
+                    this.getAllRecords(); // Refresh the records list after adding
+                })
+                .catch(error => {
+                    console.error('Error adding record:', error);
+                });
+        },
+
+        updateRecords() {
+                const newRecord = {
+                    id: this.AddedId,
+                    title: this.AddedTitle,
+                    artist: this.AddedArtist,
+                    genre: this.AddedGenre,
+                    year: this.AddedYear,
+                    duration: this.AddedDuration
+                };
+
+                axios.put('http://localhost:5246/api/records', newRecord, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
+                    }   
+                })
+                .then(response => {
+                    console.log('Record added:', response.data);
+                    this.getAllRecords(); // Refresh the records list after adding
+                })
+                .catch(error => {
+                    console.error('Error adding record:', error);
+                });
+        },
+
+        deleteRecord() {
+            axios.delete(`http://localhost:5246/api/records/${this.AddedId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
+                }
+            }).then(response => {
+                console.log('Record deleted:', response.data);
+                this.getAllRecords(); // Refresh the records list after deletion
+            })
+            .catch(error => {
+                console.error('Error deleting record:', error);
+            });
+        },
+
         login() {
             const loginData = {
                 username: this.username,
