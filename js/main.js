@@ -1,8 +1,6 @@
 const app = Vue.createApp({
     data() {
         return {
-            username: '',
-            password: '',
             Role: '',
 
             records: [],
@@ -106,25 +104,13 @@ const app = Vue.createApp({
             });
         },
 
-        login() {
-            const loginData = {
-                username: this.username,
-                password: this.password
-            };
-            axios.post(`${this.baseUrl}/api/auth/login`, loginData)
-                .then(response => {
-                    localStorage.setItem('MusicToken', response.data.token);
-                    this.Role = response.data.role; // Assuming the role is returned in the response
-
-                })
-                .catch(error => {
-                    console.error('Login failed:', error);
-                });
+        handleLogin(role) {
+            this.Role = role;
         },
+
         logout() {
             localStorage.removeItem('MusicToken');
             this.Role = '';
         }
     }
 })
-app.mount("#app")
