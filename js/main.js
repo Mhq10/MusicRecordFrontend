@@ -1,8 +1,6 @@
 const app = Vue.createApp({
     data() {
         return {
-            username: '',
-            password: '',
             Role: '',
 
             records: [],
@@ -17,13 +15,15 @@ const app = Vue.createApp({
             AddedArtist: '',
             AddedGenre: '',
             AddedYear: null,
-            AddedDuration: null
+            AddedDuration: null,
+
+            baseUrl: 'https://musicrecordapi-gfhghdbpdncqgrgp.swedencentral-01.azurewebsites.net'
         }
     },
 
     methods: {
         getAllRecords() {
-            axios.get('http://localhost:5246/api/records',{
+            axios.get(`${this.baseUrl}/api/records`,{
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
                 },
@@ -52,7 +52,7 @@ const app = Vue.createApp({
                 duration: this.AddedDuration
             };
 
-            axios.post('http://localhost:5246/api/records', newRecord, {
+            axios.post(`${this.baseUrl}/api/records`, newRecord, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
                 }
@@ -76,13 +76,13 @@ const app = Vue.createApp({
                     duration: this.AddedDuration
                 };
 
-                axios.put('http://localhost:5246/api/records', newRecord, {
+                axios.put(`${this.baseUrl}/api/records`, newRecord, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
                     }   
                 })
                 .then(response => {
-                    console.log('Record added:', response.data);
+                    console.log('Record updated:', response.data);
                     this.getAllRecords(); // Refresh the records list after adding
                 })
                 .catch(error => {
@@ -91,7 +91,7 @@ const app = Vue.createApp({
         },
 
         deleteRecord() {
-            axios.delete(`http://localhost:5246/api/records/${this.AddedId}`, {
+            axios.delete(`${this.baseUrl}/api/records/${this.AddedId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('MusicToken')}`
                 }
@@ -104,25 +104,13 @@ const app = Vue.createApp({
             });
         },
 
-        login() {
-            const loginData = {
-                username: this.username,
-                password: this.password
-            };
-            axios.post('http://localhost:5246/api/auth/login', loginData)
-                .then(response => {
-                    localStorage.setItem('MusicToken', response.data.token);
-                    this.Role = response.data.role; // Assuming the role is returned in the response
-
-                })
-                .catch(error => {
-                    console.error('Login failed:', error);
-                });
+        handleLogin(role) {
+            this.Role = role;
         },
+
         logout() {
             localStorage.removeItem('MusicToken');
             this.Role = '';
         }
     }
 })
-app.mount("#app")
