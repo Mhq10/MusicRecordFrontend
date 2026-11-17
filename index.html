@@ -7,203 +7,377 @@
 
     <title>DR Music Library</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Vue -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <!-- Axios -->
     <script src="https://unpkg.com/axios@1.20.0/dist/axios.min.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-light">
 
-    <div id="app">
-        <input id="usernameInput" class="form-control mb-3" v-model="username" placeholder="Username">
-        <input id="password" class="form-control mb-3" v-model="password" type="password" placeholder="Password">
-        <button id="loginBtn" class="btn btn-primary" v-on:click="login">Login</button>
-        <button id="logoutBtn" class="btn btn-danger" v-if="Role !== ''" @click="logout">Logout</button>
+<div id="app">
 
-        <!-- Main container -->
-        <div class="container py-5">
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
 
-            <!-- Page heading -->
-            <div class="mb-4">
-                <h1 class="display-5 fw-bold">DR Music Library</h1>
-                <p class="text-muted">
-                    Welcome to the music record administration system.
-                </p>
+            <a class="navbar-brand fw-bold" href="#">
+                DR Music Library
+            </a>
+
+            <div class="d-flex align-items-center gap-3">
+
+                <span v-if="Role !== ''" class="text-white">
+                    {{ Role }}
+                </span>
+
+                <button
+                    id="logoutBtn"
+                    class="btn btn-danger btn-sm"
+                    v-if="Role !== ''"
+                    @click="logout">
+                    Logout
+                </button>
+
             </div>
 
-            <!-- Get Music records card -->
-            <div v-if="Role !== ''" class="card shadow-sm" tag="GetRecords" >
+        </div>
+    </nav>
 
-                <div class="card-body">
+
+    <!-- Main container -->
+    <div class="container py-5">
+
+        <!-- Page heading -->
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">Welcome to DR Music Library</h1>
+
+            <p class="text-muted">
+                Manage and explore your music collection.
+            </p>
+
+        </div>
+
+
+        <!-- Login section -->
+        <div v-if="Role === ''" class="card shadow-sm mb-4 mx-auto" style="max-width: 450px">
+
+            <div class="card-body p-4">
+
+                <h2 class="h4 mb-4">Login</h2>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Username</label>
 
                     <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="search-title"
-                        placeholder="Search by title"
-                        v-model="searchTitle">
+                        id="usernameInput"
+                        class="form-control"
+                        v-model="username"
+                        placeholder="Enter username">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">Password</label>
 
                     <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="search-artist"
-                        placeholder="Search by artist"
-                        v-model="searchArtist">
+                        id="password"
+                        class="form-control"
+                        v-model="password"
+                        type="password"
+                        placeholder="Enter password">
 
-                    <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="search-genre"
-                        placeholder="Search by genre"
-                        v-model="searchGenre">
-                    
-                    <input
-                        type="number"
-                        class="form-control mb-3"
-                        id="search-year"
-                        placeholder="Search by year"
-                        v-model.number="searchYear">
+                </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                <button
+                    id="loginBtn"
+                    class="btn btn-primary w-100"
+                    @click="login">
+                    Login
+                </button>
 
-                        <h2 class="h4 mb-0">Get Music Records</h2>
+            </div>
 
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            id="getRecordsBtn"
-                            @click="getAllRecords">
-                            Get Music Records
-                        </button>
+        </div>
 
+
+        <!-- Get Music Records -->
+        <div v-if="Role !== ''" class="card shadow-sm mb-4">
+
+            <div class="card-header bg-white">
+
+                <h2 class="h5 mb-0">Music Records</h2>
+
+            </div>
+
+            <div class="card-body">
+
+                <!-- Search fields -->
+                <h3 class="h6 mb-3">Search Records</h3>
+
+                <div class="row g-3 mb-4">
+
+                    <div class="col-md-3">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="search-title"
+                            placeholder="Search by title"
+                            v-model="searchTitle">
                     </div>
 
-                    <!-- Records table -->
-                    <div class="table-responsive" v-if="records.length > 0">
-
-                        <table class="table table-striped table-hover" id="recordsTable">
-
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Artist</th>
-                                    <th>Year</th>
-                                    <th>Genre</th>
-                                    <th>Duration</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr v-for="record in records" :key="record.id">
-                                    <td>{{ record.title }}</td>
-                                    <td>{{ record.artist }}</td>
-                                    <td>{{ record.year }}</td>
-                                    <td>{{ record.genre }}</td>
-                                    <td>{{ record.duration }} seconds</td>
-                                </tr>
-                            </tbody>
-
-                        </table>
-
+                    <div class="col-md-3">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="search-artist"
+                            placeholder="Search by artist"
+                            v-model="searchArtist">
                     </div>
 
-                    <!-- Empty message -->
-                    <div v-else class="alert alert-info mb-0">
-                        No music records available. Click the button to load records.
+                    <div class="col-md-3">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="search-genre"
+                            placeholder="Search by genre"
+                            v-model="searchGenre">
                     </div>
+
+                    <div class="col-md-3">
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="search-year"
+                            placeholder="Search by year"
+                            v-model.number="searchYear">
+                    </div>
+
+                </div>
+
+
+                <!-- Get records button -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <p class="text-muted mb-0">
+                        View all available music records.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        id="getRecordsBtn"
+                        @click="getAllRecords">
+                        Get Music Records
+                    </button>
+
+                </div>
+
+
+                <!-- Records table -->
+                <div class="table-responsive" v-if="records.length > 0">
+
+                    <table class="table table-striped table-hover" id="recordsTable">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th>Title</th>
+                                <th>Artist</th>
+                                <th>Year</th>
+                                <th>Genre</th>
+                                <th>Duration</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr v-for="record in records" :key="record.id">
+
+                                <td>{{ record.title }}</td>
+                                <td>{{ record.artist }}</td>
+                                <td>{{ record.year }}</td>
+                                <td>{{ record.genre }}</td>
+                                <td>{{ record.duration }} seconds</td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Empty message -->
+                <div v-else class="alert alert-info mb-0">
+
+                    No music records available. Click the button to load records.
 
                 </div>
 
             </div>
 
-             <!-- Add Music records card -->
-            <div v-if="Role == 'Admin'" class="card shadow-sm" tag="AddRecords" >
+        </div>
 
-                <div class="card-body">
 
-                    <input
-                        type="number"
-                        class="form-control mb-3"
-                        id="addedId"
-                        placeholder="Write ID of record"
-                        v-model="AddedId">
+        <!-- Admin section -->
+        <div v-if="Role === 'Admin'" class="card shadow-sm mb-4">
 
-                    <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="addedTitle"
-                        placeholder="Add title"
-                        v-model="AddedTitle">
+            <div class="card-header bg-white">
 
-                    <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="addedArtist"
-                        placeholder="Add artist"
-                        v-model="AddedArtist">
+                <h2 class="h5 mb-0">Admin - Manage Music Records</h2>
 
-                    <input
-                        type="text"
-                        class="form-control mb-3"
-                        id="addedGenre"
-                        placeholder="Add genre"
-                        v-model="AddedGenre">
-                    
-                    <input
-                        type="number"
-                        class="form-control mb-3"
-                        id="addedYear"
-                        placeholder="Add year"
-                        v-model.number="AddedYear">
-                    
-                    <input
-                        type="number"
-                        class="form-control mb-3"
-                        id="addedDuration"
-                        placeholder="Add duration in seconds"
-                        v-model.number="AddedDuration">
+            </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="card-body">
 
-                        <h2 class="h4 mb-0">Admin Music Records</h2>
+                <h3 class="h6 mb-3">Music Record Information</h3>
 
-                        <button
-                            type="button"
-                            class="btn btn-danger"
-                            id="deleteRecordsBtn"
-                            @click="deleteRecord">
-                            Delete Music Records (No confirmation)
-                        </button>
+                <!-- Input fields -->
+                <div class="row g-3">
 
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            id="addRecordsBtn"
-                            @click="addRecords">
-                            Add Music Records
-                        </button>
+                    <div class="col-md-4">
 
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            id="updateRecordsBtn"
-                            @click="updateRecords">
-                            Update Music Records
-                        </button>
+                        <label class="form-label">Record ID</label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="addedId"
+                            placeholder="Record ID"
+                            v-model="AddedId">
 
                     </div>
 
+                    <div class="col-md-4">
+
+                        <label class="form-label">Title</label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="addedTitle"
+                            placeholder="Title"
+                            v-model="AddedTitle">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Artist</label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="addedArtist"
+                            placeholder="Artist"
+                            v-model="AddedArtist">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Genre</label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="addedGenre"
+                            placeholder="Genre"
+                            v-model="AddedGenre">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Year</label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="addedYear"
+                            placeholder="Release year"
+                            v-model.number="AddedYear">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">Duration (seconds)</label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="addedDuration"
+                            placeholder="Duration"
+                            v-model.number="AddedDuration">
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!-- Admin buttons -->
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        id="addRecordsBtn"
+                        @click="addRecords">
+                        Add Record
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-warning"
+                        id="updateRecordsBtn"
+                        @click="updateRecords">
+                        Update Record
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        id="deleteRecordsBtn"
+                        @click="deleteRecord">
+                        Delete Record
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
+
+
+        <!-- Footer -->
+        <footer class="text-center text-muted py-4">
+
+            <p>DR Music Library &copy; 2026</p>
+
+        </footer>
 
     </div>
 
-    <!-- Your Vue JavaScript -->
-    <script src="js/main.js"></script>
+</div>
+
+
+<!-- Vue JavaScript -->
+<script src="js/main.js"></script>
+
 </body>
 </html>
